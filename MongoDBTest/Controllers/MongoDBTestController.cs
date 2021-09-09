@@ -25,12 +25,10 @@ namespace MongoDBTest.Controllers
             _logger = logger;
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetHealth()
-        //{
-        //    return "Health";
-        //}
-
+        /// <summary>
+        /// Get all books from databases
+        /// </summary>
+        /// <returns>JSON list of the books</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Book>>> GetAll()
         {
@@ -50,6 +48,11 @@ namespace MongoDBTest.Controllers
             return Ok(books);
         }
 
+
+        /// <summary>
+        /// Get books by id from databases
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetBookById")]
         public async Task<ActionResult<Book>> GetBookById(string id)
         {
@@ -73,7 +76,11 @@ namespace MongoDBTest.Controllers
 
             return Ok(book);
         }
-        //[Produces("application/xml")]        
+
+
+        /// <summary>
+        /// Create a book 
+        /// </summary>    
         [HttpPost(Name = "CreateBook")]
         public async Task<IActionResult> CreateBook(Book book)
         {
@@ -105,6 +112,10 @@ namespace MongoDBTest.Controllers
             await _bookService.CreateBook(book);
             return Ok(book);
         }
+
+        /// <summary>
+        /// Modify a book by id
+        /// </summary>
         [HttpPut("{id}", Name ="UpdateBook")]
         public async Task<IActionResult> UpdateBook(string id, Book updatedBook)
         {           
@@ -117,6 +128,9 @@ namespace MongoDBTest.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Delete all books from databases
+        /// </summary>
         [HttpDelete(Name = "DeleteAllBooks")]
         public async Task<IActionResult> DeleteAllBooks()
         {
@@ -124,6 +138,9 @@ namespace MongoDBTest.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Delete a books by rid
+        /// </summary>
         [HttpDelete("{id}", Name = "DeleteBookById")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -136,6 +153,10 @@ namespace MongoDBTest.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Delete author by id from databases
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete("author", Name ="DeleteAuthor")]
         public async Task<IActionResult> DeleteAll()
         {
@@ -143,6 +164,10 @@ namespace MongoDBTest.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Get author from databases
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("author", Name = "GetAllAuthors")]
         public async Task<ActionResult<List<Author>>> GetAllAuthors()
         {
@@ -150,6 +175,10 @@ namespace MongoDBTest.Controllers
             return Ok(authorList);
         }
 
+        /// <summary>
+        /// Create author 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("author", Name = "CreateAuthor")]
         public async Task<IActionResult> CreateAuthor(Author author)
         {

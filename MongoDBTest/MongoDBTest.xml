@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MongoDBTest</name>
+    </assembly>
+    <members>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.GetAll">
+            <summary>
+            Get all books from databases
+            </summary>
+            <returns>JSON list of the books</returns>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.GetBookById(System.String)">
+            <summary>
+            Get books by id from databases
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.CreateBook(MongoDBTest.Models.Book)">
+            <summary>
+            Create a book 
+            </summary>    
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.UpdateBook(System.String,MongoDBTest.Models.Book)">
+            <summary>
+            Modify a book by id
+            </summary>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteAllBooks">
+            <summary>
+            Delete all books from databases
+            </summary>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.Delete(System.String)">
+            <summary>
+            Delete a books by rid
+            </summary>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteAll">
+            <summary>
+            Delete author by id from databases
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.GetAllAuthors">
+            <summary>
+            Get author from databases
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.CreateAuthor(MongoDBTest.Models.Author)">
+            <summary>
+            Create author 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MongoDBTest.Models.Author.FirstName">
+            <summary>
+            The Author's first name.
+            </summary>
+            <example>Thomas</example>  
+        </member>
+        <member name="P:MongoDBTest.Models.Author.LastName">
+            <summary>
+            The Author's last name.
+            </summary>
+            <example>Mann</example>  
+        </member>
+        <member name="P:MongoDBTest.Models.Author.isVIP">
+            <summary>
+            Is The Author's VIP.
+            </summary>
+            <example>false</example>  
+        </member>
+        <member name="P:MongoDBTest.Models.Author.Profit">
+            <summary>
+            The Author's profit if he/she is a VIP.
+            </summary>
+            <example>13.54</example>  
+        </member>
+        <member name="P:MongoDBTest.Models.Book.Id">
+            <summary>
+            The Book's id.
+            </summary>
+            <example>fksjfhweiofh84irziu</example>
+        </member>
+        <member name="P:MongoDBTest.Models.Book.BookName">
+            <summary>
+            The Book's name.
+            </summary>
+            <example>Mario és a varázsló</example>
+        </member>
+        <member name="P:MongoDBTest.Models.Book.Price">
+            <summary>
+            The Book's price.
+            </summary>
+            <example>9500</example>
+        </member>
+        <member name="P:MongoDBTest.Models.Book.Category">
+            <summary>
+            The Book's category.
+            </summary>
+            <example>Drama</example>
+        </member>
+        <member name="M:MongoDBTest.Services.IBookService.GetBooks">
+            <summary>
+            Get all books from the Books collection
+            </summary>
+            <returns>List of Books</returns>
+        </member>
+        <member name="M:MongoDBTest.Services.IBookService.GetBook(System.String)">
+            <summary>
+            Get a book by its id from the Books collection
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Services.IBookService.CreateBook(MongoDBTest.Models.Book)">
+            <summary>
+            Insert a book into the Books collection
+            </summary>
+            <param name="book"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Services.IBookService.UpdateBook(System.String,MongoDBTest.Models.Book)">
+            <summary>
+            Updates an existing book in the Books collection
+            </summary>
+            <param name="id"></param>
+            <param name="book"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Services.IBookService.RemoveBook(MongoDBTest.Models.Book)">
+            <summary>
+            Removes a book from the Books collection
+            </summary>
+            <param name="book"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDBTest.Services.IBookService.RemoveBookById(System.String)">
+            <summary>
+            Removes a book with the specified id from the Books collection
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
