@@ -34,16 +34,16 @@ namespace MongoDBTest.Controllers
         public virtual async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
         {
             var books = await _bookService.GetBooks();
-            
+
             //author documents readout
-            foreach(Book book in books)
+            foreach (Book book in books)
             {
                 book.AuthorList = new List<Author>();
-                foreach(string authorId in book.Authors)
+                foreach (string authorId in book.Authors)
                 {
                     var resultAuthor = await _authorService.GetAuthorById(authorId);
                     book.AuthorList.Add(resultAuthor);
-                }               
+                }
             }
 
             return Ok(books);

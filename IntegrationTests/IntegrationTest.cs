@@ -12,6 +12,7 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using System.Text.Json;
 using System.Text;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrationTests
 {
@@ -65,7 +66,7 @@ namespace IntegrationTests
         [Theory]
         [InlineData("https://localhost:5001/api/books")]
         [InlineData("https://localhost:5001/api/MongoDBTest")]
-        public async Task Test2(string url)
+        public async Task Test2_Post(string url)
         {
             // Arrange & Act
             var jsonOption = new JsonSerializerOptions();
@@ -80,12 +81,19 @@ namespace IntegrationTests
             //Assert
             Assert.IsNotNull(response);
             Assert.IsTrue(response.StatusCode==HttpStatusCode.Created);
+
+            var bookId = await response.Content.ReadAsStringAsync();
+            var returnedBook = await GetBookById(bookId);
+            Assert.AreEqual(returnedBook.BookName, _book.BookName);
+
+            //Clean up
+            await DeleteBookById(bookId);
         }
 
         [Theory]
         [InlineData("https://localhost:5001/api/books")]
         [InlineData("https://localhost:5001/api/MongoDBTest")]
-        public async Task Test3(string url)
+        public async Task Test3_Get(string url)
         {
             // Arrange & Act
             var options = new JsonSerializerOptions
@@ -96,28 +104,34 @@ namespace IntegrationTests
             var bodyStringContent = await response.Content.ReadAsStringAsync();
             _actualBookList = JsonSerializer.Deserialize<List<Book>>(bodyStringContent, options);
 
-
-            Assert.IsTrue(response.StatusCode==HttpStatusCode.OK);
-            CollectionAssert.AllItemsAreInstancesOfType(_actualBookList, typeof(Book));
-            CollectionAssert.AllItemsAreUnique(_actualBookList);
-            var resultList = _actualBookList.FindAll(l => l.BookName == _book.BookName);
-            var resultBookIdList = from result in resultList
-                                       select result.Id;
-            _bookIdList = resultBookIdList.ToList(); //save for later
-            
-            Assert.IsTrue(resultList.Count == 2);
+            //Assert
+            if (_actualBookList.Count > 0) {                
+                CollectionAssert.AllItemsAreInstancesOfType(_actualBookList, typeof(Book));
+                CollectionAssert.AllItemsAreUnique(_actualBookList);
+                foreach(var book in _actualBookList)
+                {                    
+                    Assert.IsFalse(string.IsNullOrEmpty(book.BookName));
+                    Assert.IsFalse(string.IsNullOrEmpty(book.Category));
+                    Assert.IsTrue(book.Price > 0);
+                    Assert.IsTrue(book.AuthorList.Count > 0);
+                }
+            }
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.OK);
         }
 
         //[Theory]
         //[InlineData("https://localhost:5001/api/books/")]
         //[InlineData("https://localhost:5001/api/MongoDBTest/")]
-        //public async Task Test4(string url)
-        //{          
-
+        //public async Task Test4_Put(string url)
+        //{
         //    // Arrange & Act
-        //    var jsonOption = new JsonSerializerOptions();
-        //    jsonOption.IgnoreNullValues = true;
-        //    jsonOption.WriteIndented = true;
+        //    var bookId = await PostABook(_book);
+
+        //    var jsonOption = new JsonSerializerOptions()
+        //    {
+        //        IgnoreNullValues = true,
+        //        WriteIndented = true
+        //    };
 
         //    _book.BookName = "New Test Book";
         //    _book.Price = 8192;
@@ -125,31 +139,58 @@ namespace IntegrationTests
         //    var jsonString = JsonSerializer.Serialize(_book, jsonOption);
         //    HttpContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-
-
-        //    var response = await _client.PutAsync(url, content);
+        //    var response = await _client.PutAsync(url+bookId, content);
 
         //    Assert.IsTrue(response.StatusCode == HttpStatusCode.Accepted);
-           
 
-
+        //    await DeleteBookById(bookId);
         //}
 
-        private async Task<string> GetBookId(string url)
+        [Theory]
+        [InlineData("https://localhost:5001/api/books/")]
+        [InlineData("https://localhost:5001/api/MongoDBTest/")]
+        public async Task Test5_Delete(string url)
+        {
+            // Arrange & Act
+            var bookId = await PostABook(_book);
+
+            var response = await _client.DeleteAsync(url + bookId);
+
+            //Assert
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.OK);
+            
+        }
+
+        private async Task<string> PostABook(Book book)
+        {
+            var jsonOption = new JsonSerializerOptions() {
+                IgnoreNullValues = true,
+                WriteIndented = true
+            };
+            var jsonString = JsonSerializer.Serialize(book, jsonOption);
+            HttpContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+            var response = await _client.PostAsync("https://localhost:5001/api/MongoDBTest", content);
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private async Task<Book> GetBookById(string id)
         {
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var response = await _client.GetAsync(url);
+            var response = await _client.GetAsync("https://localhost:5001/api/MongoDBTest/"+id);
             var bodyStringContent = await response.Content.ReadAsStringAsync();
-            _actualBookList = JsonSerializer.Deserialize<List<Book>>(bodyStringContent, options);
+            return JsonSerializer.Deserialize<Book>(bodyStringContent, options);
+           
+        }
 
-            var resultList = _actualBookList.FindAll(l => l.BookName == _book.BookName);
-            var resultBookIdList = from result in resultList
-                                   select result.Id;
-            _bookIdList = resultBookIdList.ToList();
-            return "";
+        private async Task<HttpStatusCode> DeleteBookById(string id)
+        {
+            var response = await _client.DeleteAsync("https://localhost:5001/api/MongoDBTest/" + id);
+            return response.StatusCode;
         }
 
         //[Theory]
