@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using MongoDBTest.Models;
+using MongoDBTest.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,62 +13,76 @@ namespace MongoDBTest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController : ControllerBase
+    public class BooksController : MongoDBTestController
     {
-
-        [HttpGet]
-        public IActionResult GetAllBooks()
+        public BooksController(IAuthorService authorService, IBookService bookService, ILogger<MongoDBTestController> logger) :base(authorService, bookService, logger)
         {
-            return Redirect("/api/MongoDBTest");
+
         }
 
-        [HttpGet("{bookId}")]
-        public IActionResult GetBookById(string bookId)
+        [HttpGet]
+        public override async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
         {
-            return RedirectToAction("GetBookById", new RouteValueDictionary(new { controller = "MongoDBTest", action = "GetBookById", Id = bookId }));
+            return await base.GetAllBooks();
+            //return Redirect("/api/MongoDBTest");
+        }
+
+        [HttpGet("{id}")]
+        public override async Task<ActionResult<Book>> GetBookById(string id)
+        {
+            return await base.GetBookById(id);
+            //    return RedirectToAction("GetBookById", new RouteValueDictionary(new { controller = "MongoDBTest", action = "GetBookById", Id = bookId }));
         }
 
         [HttpPost]
-        public IActionResult CreateBook(Book book)
+        public override async Task<IActionResult> CreateBook(Book book)
         {
-            return RedirectToAction("CreateBook", new RouteValueDictionary(new { controller = "MongoDBTest", action = "CreateBook", Book = book }));
+            return await base.CreateBook(book);
+            //return RedirectToAction("CreateBook", "MongoDBTest", new { Book = book });
         }
 
-        [HttpPut]
-        public IActionResult CreateBook(string bookId, Book updatedBook)
+        [HttpPut("{id}")]
+        public override async Task<IActionResult> UpdateBook([FromRoute]string id, [FromBody]Book updatedBook)
         {
-            return RedirectToAction("UpdateBook", new RouteValueDictionary(new { controller = "MongoDBTest", action = "UpdateBook", Id = bookId, Book = updatedBook }));
+            return await base.UpdateBook(id, updatedBook);
+            //return RedirectToAction("UpdateBook", new RouteValueDictionary(new { controller = "MongoDBTest", action = "UpdateBook", Id = bookId, Book = updatedBook }));
         }
 
-        //cut out
+        ////cut out
         [HttpDelete]
-        public IActionResult DeleteAllBooks()
+        public override async Task<IActionResult> DeleteAllBooks()
         {
-            return Redirect("/api/MongoDBTest");
+            return await base.DeleteAllBooks();
         }
 
-        [HttpDelete("{bookId}")]
-        public IActionResult DeleteBookById(string bookId)
+        [HttpDelete("{id}")]
+        public override async Task<IActionResult> DeleteBookById([FromRoute] string id)
         {
-            return RedirectToAction("DeleteBookById", new RouteValueDictionary(new { controller = "MongoDBTest", action = "DeleteBookById", Id = bookId }));
+            return await base.DeleteBookById(id);
         }
 
         [HttpGet("author")]
-        public IActionResult GetAllAuthors()
+        public override async Task<ActionResult<List<Author>>> GetAllAuthors()
         {
-            return Redirect("/api/MongoDBTest/author");
+            return await base.GetAllAuthors();
         }
 
         [HttpPost("author")]
-        public IActionResult CreateAuthor(Author author)
+        public override async Task<IActionResult> CreateAuthor([FromBody]Author author)
         {
-            return RedirectToAction("CreateAuthor", new RouteValueDictionary(new { controller = "MongoDBTest", action = "CreateAuthor", Author = author }));
+            return await base.CreateAuthor(author);
         }
 
-        [HttpDelete("author")]
-        public IActionResult DeleteAll()
+        [HttpPut("author/{id}")]
+        public override async Task<IActionResult> UpdateAuthor([FromRoute] string id, [FromBody] Author author)
         {
-            return Redirect("/api/MongoDBTest/author");
+            return await base.UpdateAuthor(id, author);
+        }
+
+        [HttpDelete("author/{id}")]
+        public override async Task<IActionResult> DeleteAuthor([FromRoute] string id)
+        {
+            return await base.DeleteAuthor(id);
         }
     }
 }

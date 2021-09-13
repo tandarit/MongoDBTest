@@ -51,27 +51,19 @@ namespace MongoDBTest.Services
             await _authors.DeleteOneAsync(authorIn => authorIn.Id == authorIn.Id);
         }
 
-        public async Task RemoveAuthorById(string id)
+        public async Task<DeleteResult> RemoveAuthorById(string id)
         {
-            await _authors.DeleteOneAsync(a => a.Id == id);
+            return await _authors.DeleteOneAsync(a => a.Id == id);
         }
 
         public async Task UpdateAuthor(string id, Author authorIn)
         {
             await _authors.ReplaceOneAsync(a => a.Id == id, authorIn);
-        }
-
-        public async Task RemoveAllAuthors()
-        {
-            await _authors.DeleteManyAsync<Author>(a=>a.Id.Length>1);
-        }
+        }        
 
         public async Task<List<Author>> FindAuthors(string findingString)
         {
             //check the string
-
-
-
             return new List<Author>();
         }
     }

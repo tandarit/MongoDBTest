@@ -13,7 +13,8 @@ namespace MongoDBTest.Models
         /// </summary>
         /// <example>fksjfhweiofh84irziu</example>
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]        
+        [BsonRepresentation(BsonType.ObjectId)]
+        
         public string Id { get; set; }
 
         /// <summary>

@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MongoDBTest.Models;
 using MongoDBTest.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace MongoDBTest.Controllers
@@ -30,7 +29,9 @@ namespace MongoDBTest.Controllers
         /// </summary>
         /// <returns>JSON list of the books</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public virtual async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
         {
             var books = await _bookService.GetBooks();
             
@@ -54,7 +55,9 @@ namespace MongoDBTest.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}", Name = "GetBookById")]
-        public async Task<ActionResult<Book>> GetBookById(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<ActionResult<Book>> GetBookById(string id)
         {
             var book = await _bookService.GetBook(id);
             if (book == null)
@@ -82,7 +85,9 @@ namespace MongoDBTest.Controllers
         /// Create a book 
         /// </summary>    
         [HttpPost(Name = "CreateBook")]
-        public async Task<IActionResult> CreateBook(Book book)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public virtual async Task<IActionResult> CreateBook(Book book)
         {
             if (book.AuthorList.Count > 0)
             {
@@ -110,14 +115,16 @@ namespace MongoDBTest.Controllers
             }
 
             await _bookService.CreateBook(book);
-            return Ok(book);
+            return new ObjectResult(book.Id) { StatusCode = StatusCodes.Status201Created }; 
         }
 
         /// <summary>
         /// Modify a book by id
         /// </summary>
         [HttpPut("{id}", Name ="UpdateBook")]
-        public async Task<IActionResult> UpdateBook(string id, Book updatedBook)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<IActionResult> UpdateBook(string id, Book updatedBook)
         {           
             var book = await _bookService.GetBook(id);
             if (book == null)
@@ -125,14 +132,14 @@ namespace MongoDBTest.Controllers
                 return NotFound();
             }
             await _bookService.UpdateBook(id, updatedBook);
-            return NoContent();
+            return new ObjectResult(book) { StatusCode = StatusCodes.Status202Accepted };
         }
 
         /// <summary>
         /// Delete all books from databases
         /// </summary>
         [HttpDelete(Name = "DeleteAllBooks")]
-        public async Task<IActionResult> DeleteAllBooks()
+        public virtual async Task<IActionResult> DeleteAllBooks()
         {
             await _bookService.RemoveAllBooks();
             return NoContent();
@@ -142,7 +149,9 @@ namespace MongoDBTest.Controllers
         /// Delete a books by rid
         /// </summary>
         [HttpDelete("{id}", Name = "DeleteBookById")]
-        public async Task<IActionResult> Delete(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<IActionResult> DeleteBookById(string id)
         {
             var book = await _bookService.GetBook(id);
             if (book == null)
@@ -150,18 +159,27 @@ namespace MongoDBTest.Controllers
                 return NotFound();
             }
             await _bookService.RemoveBook(book);
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
         /// Delete author by id from databases
         /// </summary>
         /// <returns></returns>
-        [HttpDelete("author", Name ="DeleteAuthor")]
-        public async Task<IActionResult> DeleteAll()
+        [HttpDelete("author/{id}", Name = "DeleteAuthor")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<IActionResult> DeleteAuthor([FromRoute] string id)
         {
-            await _authorService.RemoveAllAuthors();
-            return NoContent();
+            var deleteResult = await _authorService.RemoveAuthorById(id);
+            if(deleteResult.IsAcknowledged && deleteResult.DeletedCount == 1)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -169,7 +187,9 @@ namespace MongoDBTest.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("author", Name = "GetAllAuthors")]
-        public async Task<ActionResult<List<Author>>> GetAllAuthors()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public virtual async Task<ActionResult<List<Author>>> GetAllAuthors()
         {
             var authorList = await _authorService.GetAuthors();
             return Ok(authorList);
@@ -178,12 +198,35 @@ namespace MongoDBTest.Controllers
         /// <summary>
         /// Create author 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Id of the Author</returns>
         [HttpPost("author", Name = "CreateAuthor")]
-        public async Task<IActionResult> CreateAuthor(Author author)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public virtual async Task<IActionResult> CreateAuthor(Author author)
         {
             var resultId = await _authorService.CreateAuthor(author);
+            if(resultId == null)
+            {
+                return BadRequest();
+            }
             _logger.LogInformation($"The new author id: {resultId}.");
+            return new ObjectResult(resultId) { StatusCode = StatusCodes.Status201Created };
+        }
+
+        /// <summary>
+        /// Modify a author.
+        /// </summary>
+        [HttpPut("author/{id}", Name = "UpdateAuthor")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public virtual async Task<IActionResult> UpdateAuthor([FromRoute]string id, [FromBody]Author updateAuthor)
+        {
+            var author = await _authorService.GetAuthorById(id);
+            if (author == null)
+            {
+                return NotFound();
+            }
+            await _authorService.UpdateAuthor(id, updateAuthor);
             return Ok(author);
         }
     }

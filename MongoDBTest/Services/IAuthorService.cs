@@ -17,14 +17,10 @@ namespace MongoDBTest.Services
         Task<string> CreateAuthor(Author authorIn);
 
        
-        Task UpdateAuthor(string id, Author authorIn);
-
+        Task UpdateAuthor(string id, Author authorIn);   
+       
         
-        Task RemoveAuthor(Author authorIn);
+        Task<DeleteResult> RemoveAuthorById(string id);
 
-        
-        Task RemoveAuthorById(string id);
-
-        Task RemoveAllAuthors();
     }
 }

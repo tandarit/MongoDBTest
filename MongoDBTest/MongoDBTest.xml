@@ -4,7 +4,7 @@
         <name>MongoDBTest</name>
     </assembly>
     <members>
-        <member name="M:MongoDBTest.Controllers.MongoDBTestController.GetAll">
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.GetAllBooks">
             <summary>
             Get all books from databases
             </summary>
@@ -31,12 +31,12 @@
             Delete all books from databases
             </summary>
         </member>
-        <member name="M:MongoDBTest.Controllers.MongoDBTestController.Delete(System.String)">
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteBookById(System.String)">
             <summary>
             Delete a books by rid
             </summary>
         </member>
-        <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteAll">
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteAuthor(System.String)">
             <summary>
             Delete author by id from databases
             </summary>
@@ -52,7 +52,12 @@
             <summary>
             Create author 
             </summary>
-            <returns></returns>
+            <returns>Id of the Author</returns>
+        </member>
+        <member name="M:MongoDBTest.Controllers.MongoDBTestController.UpdateAuthor(System.String,MongoDBTest.Models.Author)">
+            <summary>
+            Modify a author.
+            </summary>
         </member>
         <member name="P:MongoDBTest.Models.Author.FirstName">
             <summary>

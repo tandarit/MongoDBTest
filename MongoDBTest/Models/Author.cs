@@ -10,7 +10,7 @@ namespace MongoDBTest.Models
         
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [JsonIgnore]
+        
         public string Id { get; set; }
 
         /// <summary>

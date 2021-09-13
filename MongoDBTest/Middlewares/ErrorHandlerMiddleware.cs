@@ -36,7 +36,7 @@ namespace MongoDBTest.Middlewares
                     case BadHttpRequestException e:
                         // custom application error
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        result = JsonSerializer.Serialize(new { message = "Rossz kérés." });
+                        result = JsonSerializer.Serialize(new { message = "Bad request." });
                         break;
                     case KeyNotFoundException e:
                         // not found error
@@ -46,7 +46,7 @@ namespace MongoDBTest.Middlewares
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        result = JsonSerializer.Serialize(new { message = "Sorry, it is an internal server error. We are working on it! ;-)" });
+                        result = JsonSerializer.Serialize(new { message = error.Message });
                         _logger.LogError(error.Message);
                         break;
                 }
