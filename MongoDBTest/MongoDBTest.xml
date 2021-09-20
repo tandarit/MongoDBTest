@@ -26,11 +26,6 @@
             Modify a book by id
             </summary>
         </member>
-        <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteAllBooks">
-            <summary>
-            Delete all books from databases
-            </summary>
-        </member>
         <member name="M:MongoDBTest.Controllers.MongoDBTestController.DeleteBookById(System.String)">
             <summary>
             Delete a books by rid

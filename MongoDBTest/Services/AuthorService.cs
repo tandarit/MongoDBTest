@@ -40,6 +40,12 @@ namespace MongoDBTest.Services
             return author.FirstOrDefault();
         }
 
+        public async Task<Author> GetAuthorByName(string firstName, string lastName)
+        {
+            var author = await _authors.FindAsync(author => (author.FirstName == firstName) && (author.LastName == lastName));
+            return author.FirstOrDefault();
+        }
+
         public async Task<List<Author>> GetAuthors()
         {
             var author = await _authors.FindAsync(a => true);
@@ -61,10 +67,19 @@ namespace MongoDBTest.Services
             await _authors.ReplaceOneAsync(a => a.Id == id, authorIn);
         }        
 
-        public async Task<List<Author>> FindAuthors(string findingString)
+        public async Task<List<Author>> FindAuthors(Author authorIn)
         {
-            //check the string
+            
+
             return new List<Author>();
         }
+
+        public async Task<Author> FindAuthor(string findingString)
+        {
+            //check the string
+            return new Author();
+        }
+
+
     }
 }

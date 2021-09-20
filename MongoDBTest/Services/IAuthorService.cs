@@ -13,6 +13,7 @@ namespace MongoDBTest.Services
 
         Task<Author> GetAuthorByFirstName(string firstName);
 
+        Task<Author> GetAuthorByName(string firstName, string lastName);
 
         Task<string> CreateAuthor(Author authorIn);
 
@@ -21,6 +22,8 @@ namespace MongoDBTest.Services
        
         
         Task<DeleteResult> RemoveAuthorById(string id);
+
+        Task<List<Author>> FindAuthors(Author author);
 
     }
 }

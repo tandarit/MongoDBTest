@@ -119,32 +119,32 @@ namespace IntegrationTests
             Assert.IsTrue(response.StatusCode == HttpStatusCode.OK);
         }
 
-        //[Theory]
-        //[InlineData("https://localhost:5001/api/books/")]
-        //[InlineData("https://localhost:5001/api/MongoDBTest/")]
-        //public async Task Test4_Put(string url)
-        //{
-        //    // Arrange & Act
-        //    var bookId = await PostABook(_book);
+        [Theory]
+        [InlineData("https://localhost:5001/api/books/")]
+        [InlineData("https://localhost:5001/api/MongoDBTest/")]
+        public async Task Test4_Put(string url)
+        {
+            // Arrange & Act
+            var bookId = await PostABook(_book);
 
-        //    var jsonOption = new JsonSerializerOptions()
-        //    {
-        //        IgnoreNullValues = true,
-        //        WriteIndented = true
-        //    };
+            var jsonOption = new JsonSerializerOptions()
+            {
+                IgnoreNullValues = true,
+                WriteIndented = true
+            };
 
-        //    _book.BookName = "New Test Book";
-        //    _book.Price = 8192;
+            _book.BookName = "New Test Book";
+            _book.Price = 8192;
 
-        //    var jsonString = JsonSerializer.Serialize(_book, jsonOption);
-        //    HttpContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var jsonString = JsonSerializer.Serialize(_book, jsonOption);
+            HttpContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-        //    var response = await _client.PutAsync(url+bookId, content);
+            var response = await _client.PutAsync(url + bookId, content);
 
-        //    Assert.IsTrue(response.StatusCode == HttpStatusCode.Accepted);
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.Accepted);
 
-        //    await DeleteBookById(bookId);
-        //}
+            await DeleteBookById(bookId);
+        }
 
         [Theory]
         [InlineData("https://localhost:5001/api/books/")]
@@ -193,25 +193,5 @@ namespace IntegrationTests
             return response.StatusCode;
         }
 
-        //[Theory]
-        //[InlineData("https://localhost:5001/api/books/")]
-        //[InlineData("https://localhost:5001/api/MongoDBTest/")]
-        //public async Task Test5_Delete(string url)
-        //{
-        //    // Arrange & Act
-        //    var options = new JsonSerializerOptions
-        //    {
-        //        PropertyNameCaseInsensitive = true,
-        //    };
-        //    var response = await _client.GetAsync(url);
-        //    var bodyStringContent = await response.Content.ReadAsStringAsync();
-        //    _actualBookList = JsonSerializer.Deserialize<List<Book>>(bodyStringContent, options);
-
-
-        //    CollectionAssert.AllItemsAreInstancesOfType(_actualBookList, typeof(Book));
-        //    CollectionAssert.AllItemsAreUnique(_actualBookList);
-        //    var resultList = _actualBookList.FindAll(l => l.BookName == _book.BookName && l.Category == _book.Category && l.Price == _book.Price);
-        //    Assert.IsTrue(resultList.Count == 2);
-        //}
     }
 }

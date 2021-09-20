@@ -36,16 +36,21 @@ namespace MongoDBTest.Controllers
             var books = await _bookService.GetBooks();
 
             //author documents readout
-            foreach (Book book in books)
-            {
-                book.AuthorList = new List<Author>();
-                foreach (string authorId in book.Authors)
-                {
-                    var resultAuthor = await _authorService.GetAuthorById(authorId);
-                    book.AuthorList.Add(resultAuthor);
-                }
-            }
+            
+                foreach (Book book in books)
+                {              
 
+                    if (book.AuthorList.Count != 0) {
+                        book.AuthorList = new List<Author>();
+                        foreach (string authorId in book.Authors)
+                        {
+                            var resultAuthor = await _authorService.GetAuthorById(authorId);
+                            book.AuthorList.Add(resultAuthor);
+                        }
+                    }
+
+                }
+            
             return Ok(books);
         }
 
@@ -131,20 +136,14 @@ namespace MongoDBTest.Controllers
             {
                 return NotFound();
             }
+            if (updatedBook.AuthorList.Count == 0)
+            {
+                return BadRequest();
+            }
             await _bookService.UpdateBook(id, updatedBook);
-            return new ObjectResult(book) { StatusCode = StatusCodes.Status202Accepted };
+            return new ObjectResult(updatedBook) { StatusCode = StatusCodes.Status202Accepted };
         }
-
-        /// <summary>
-        /// Delete all books from databases
-        /// </summary>
-        [HttpDelete(Name = "DeleteAllBooks")]
-        public virtual async Task<IActionResult> DeleteAllBooks()
-        {
-            await _bookService.RemoveAllBooks();
-            return NoContent();
-        }
-
+                
         /// <summary>
         /// Delete a books by rid
         /// </summary>

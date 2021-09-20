@@ -48,13 +48,7 @@ namespace MongoDBTest.Controllers
             //return RedirectToAction("UpdateBook", new RouteValueDictionary(new { controller = "MongoDBTest", action = "UpdateBook", Id = bookId, Book = updatedBook }));
         }
 
-        ////cut out
-        [HttpDelete]
-        public override async Task<IActionResult> DeleteAllBooks()
-        {
-            return await base.DeleteAllBooks();
-        }
-
+       
         [HttpDelete("{id}")]
         public override async Task<IActionResult> DeleteBookById([FromRoute] string id)
         {
